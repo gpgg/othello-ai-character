@@ -196,6 +196,11 @@ const countTurnOver = (
       }
       const points = calcPoints(state.squares);
       setPoints(points);
+
+      if (state.currentPlayer.squareType === SquareType.White) {
+        // Now it's AI's turn.
+        // dispatch({t: "turn", x: 3, y: 5})
+      }
     }, [state, players]);
   
     return (

@@ -201,6 +201,7 @@ const countTurnOver = (
     return (
       <>
         <Board SquareTypes={state.squares} onClick={(x: number, y: number) => {
+            console.log(x, y);
           dispatch({ t: 'turn', x: x, y: y });
         }} />
         <Option>

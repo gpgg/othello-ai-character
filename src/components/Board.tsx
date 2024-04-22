@@ -18,7 +18,7 @@ export const Board = (props: {
     const squares = (
         SquareTypes.map((line, y) => {
             return (
-                <div>
+                <div key={y}>
                     {
                         line.map((row, x) => {
                             return (
@@ -27,6 +27,7 @@ export const Board = (props: {
                                     onClick={onClick}
                                     x={x}
                                     y={y}
+                                    key={`${x}-${y}`}
                                 />
                             )
                         })

@@ -28,7 +28,7 @@ const isWithinBoard = (x: number, y: number) : boolean => {
     return true;
 }
 
-const countFlips = (
+const getCountFlips = (
     squares: SquareTypes,
     player: IPlayer,
     x: number,
@@ -65,7 +65,7 @@ const flipPieces = (
       for (let dx = -1; dx <= 1; dx++) {
         if (dy === 0 && dx === 0) continue;
   
-        const count = countFlips(squares, player, x, y, dx, dy);
+        const count = getCountFlips(squares, player, x, y, dx, dy);
         for (let i = 0; i <= count; i++) {
           const _y = y + i * dy;
           const _x = x + i * dx;
@@ -99,7 +99,7 @@ const canPut = (
       for (let dx = -1; dx <= 1; dx++) {
         if (dy === 0 && dx === 0) continue;
   
-        const count = countFlips(squares, player, x, y, dx, dy);
+        const count = getCountFlips(squares, player, x, y, dx, dy);
         if (count > 0) can = true;
       }
     }
@@ -186,6 +186,34 @@ const convertSquaresToString = (squares: SquareType[][]): string => {
     return boardStr;
 }
 
+const getAvailableMoves = (
+    squares: SquareTypes,
+    player: IPlayer,
+): number[][] => {
+    let availableMoves = [];
+    for (let j = 0; j < squares.length; j++) {
+        for (let i = 0; i < squares[0].length; i++) {
+            if (canPut(squares, player, i, j)) {
+                let move = [i, j];
+                availableMoves.push(move);
+            }
+        }
+    
+    }
+    return availableMoves;
+}
+
+const convertAvaiableMovesToStr = (moves: number[][]): string => {
+    let movesStr = "";
+    for (const move of moves) {
+        movesStr += "(";
+        movesStr += move.toString();
+        movesStr += ") ";
+    }
+
+    return movesStr
+}
+
 export const Game = (props: {
     players: IPlayer[],
   }) => {
@@ -219,7 +247,36 @@ export const Game = (props: {
             // dispatch({t: "turn", x: 3, y: 5})
             // print the current state of board
             const boardStr = convertSquaresToString(state.squares);
-            console.log(boardStr);
+            // console.log(boardStr);
+
+            const availableMoves = getAvailableMoves(state.squares, state.currentPlayer);
+            // console.log(availableMoves);
+            
+            const availableMovesStr = convertAvaiableMovesToStr(availableMoves);
+            // console.log(availableMovesStr);
+            const instructionMsg = "You are a beginner player of the Othello game, and your task is to compete against another player. Your piece is white. In each round, you will receive a game board which is a 0-7 * 0-7 grid labeled starting from 0 and available moves for the white pieces. You must choose the appropriate position you want to place your white piece, formatted as (row_position, column_position).  Also, you need to explain your thought process in simple Japanese, and keep it brief. Please output the position and Japanese explanation only. Example:\n\n\n User:\n********\n********\n********\n***WB***\n***BBB**\n********\n********\n******** Available moves of white pieces: (3,5), (5,3), (5,5)\n Output: Position: (5,3)\nJapanese Explanation: 横5縦3の位置に白い駒を置くと、縦の黒い駒を白い駒で挟むことができます。これにより、黒い駒を白い駒に変えることができるため、この位置を選びます。";
+            const userMsg = `${boardStr}\nAvailable moves of white pieces: ${availableMovesStr}`;
+            const finalMsg = `${instructionMsg} User: ${userMsg}`;
+
+            (async () => {
+              const rawResponse = await fetch('https://httpbin.org/post', {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({"move": [5, 3]})
+              });
+              const content = await rawResponse.json();
+              const move = content.json;
+              console.log(move);
+              let x = move.move[0];
+              let y = move.move[1];
+              console.log(x, y);
+              dispatch({t: "turn", x: x, y: y});
+            })();
+
+            console.log(userMsg);
         }
     }, [state, players]);
   

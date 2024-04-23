@@ -256,7 +256,7 @@ export const Game = (props: {
             // console.log(availableMovesStr);
             const instructionMsg = "You are a beginner player of the Othello game, and your task is to compete against another player. Your piece is white. In each round, you will receive a game board which is a 0-7 * 0-7 grid labeled starting from 0 and available moves for the white pieces. You must choose the appropriate position you want to place your white piece, formatted as (row_position, column_position).  Also, you need to explain your thought process in simple Japanese, and keep it brief. Please output the position and Japanese explanation only. Example:\n\n\n User:\n********\n********\n********\n***WB***\n***BBB**\n********\n********\n******** Available moves of white pieces: (3,5), (5,3), (5,5)\n Output: Position: (5,3)\nJapanese Explanation: 横5縦3の位置に白い駒を置くと、縦の黒い駒を白い駒で挟むことができます。これにより、黒い駒を白い駒に変えることができるため、この位置を選びます。";
             const userMsg = `${boardStr}\nAvailable moves of white pieces: ${availableMovesStr}`;
-            const finalMsg = `${instructionMsg} User: ${userMsg}`;
+            const finalMsg = `${instructionMsg} User:\n${userMsg}`;
 
             (async () => {
                 const rawResponse = await fetch('http://127.0.0.1:5000/api/user_msg', {

@@ -259,21 +259,23 @@ export const Game = (props: {
             const finalMsg = `${instructionMsg} User: ${userMsg}`;
 
             (async () => {
-              const rawResponse = await fetch('https://httpbin.org/post', {
-                method: 'POST',
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({"move": [5, 3]})
-              });
-              const content = await rawResponse.json();
-              const move = content.json;
-              console.log(move);
-              let x = move.move[0];
-              let y = move.move[1];
-              console.log(x, y);
-              dispatch({t: "turn", x: x, y: y});
+                const rawResponse = await fetch('http://127.0.0.1:5000/api/user_msg', {
+                    method: 'POST',
+                    headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({"user_msg": finalMsg})
+                });
+                const content = await rawResponse.json();
+                // console.log(content);
+                const move = content.move;
+                // console.log(move)
+                //   console.log(move);
+                let x = move[0];
+                let y = move[1];
+                console.log(x, y);
+                dispatch({t: "turn", x: x, y: y});
             })();
 
             console.log(userMsg);

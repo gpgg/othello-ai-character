@@ -28,14 +28,14 @@ const isWithinBoard = (x: number, y: number) : boolean => {
     return true;
 }
 
-const countTurnOver = (
+const countFlips = (
     squares: SquareTypes,
     player: IPlayer,
     x: number,
     y: number,
     dx: number,
     dy: number,
-  ): number => {
+): number => {
     let i = 1;
     while (1) {
       const _y = y + i * dy;
@@ -49,14 +49,14 @@ const countTurnOver = (
       return i - 1;
     }
     return 0;
-  }
+}
   
-  const turnOver = (
+const flipPieces = (
     squares: SquareTypes,
     player: IPlayer,
     x: number,
     y: number,
-  ): SquareTypes => {
+): SquareTypes => {
     const newSquares = [];
     for (const line of squares) {
       newSquares.push([...line]);
@@ -65,7 +65,7 @@ const countTurnOver = (
       for (let dx = -1; dx <= 1; dx++) {
         if (dy === 0 && dx === 0) continue;
   
-        const count = countTurnOver(squares, player, x, y, dx, dy);
+        const count = countFlips(squares, player, x, y, dx, dy);
         for (let i = 0; i <= count; i++) {
           const _y = y + i * dy;
           const _x = x + i * dx;
@@ -75,23 +75,23 @@ const countTurnOver = (
       }
     }
     return newSquares;
-  };
+};
   
-  const isSkip = (squares: SquareTypes, player: IPlayer): boolean => {
+const isSkip = (squares: SquareTypes, player: IPlayer): boolean => {
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
         if (canPut(squares, player, x, y)) return false;
       }
     }
     return true;
-  }
+}
   
-  const canPut = (
+const canPut = (
     squares: SquareTypes,
     player: IPlayer,
     x: number,
     y: number,
-  ): boolean => {
+): boolean => {
     if (squares[y][x] !== SquareType.Undef) return false;
   
     let can = false;
@@ -99,14 +99,14 @@ const countTurnOver = (
       for (let dx = -1; dx <= 1; dx++) {
         if (dy === 0 && dx === 0) continue;
   
-        const count = countTurnOver(squares, player, x, y, dx, dy);
+        const count = countFlips(squares, player, x, y, dx, dy);
         if (count > 0) can = true;
       }
     }
     return can;
-  }
-  
-  const calcPoints = (squares: SquareTypes): number[] => {
+}
+
+const calcPoints = (squares: SquareTypes): number[] => {
     let blackPoints = 0, whitePoints = 0;
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
@@ -118,9 +118,9 @@ const countTurnOver = (
       }
     }
     return [blackPoints, whitePoints];
-  };
+};
   
-  const InitButton = styled.button`
+const InitButton = styled.button`
     background: linear-gradient(to right,red,orange,yellow,green,aqua,blue,purple);
     width: 100px;
     font-size: 20px;
@@ -129,47 +129,64 @@ const countTurnOver = (
     border-radius: 10px;
     left: 510px;
     top: -140px; 
-  `;
+`;
   
-  const Option = styled.div`
+const Option = styled.div`
     position: relative;
-  `;
-  
-  type State = {
+`;
+
+type State = {
     squares: SquareType[][],
     currentPlayer: IPlayer,
-  };
-  
-  type Action = { t: 'init', player: IPlayer }
+};
+
+type Action = { t: 'init', player: IPlayer }
     | { t: 'turn', x: number, y: number }
     | { t: 'skip' };
-  
-  const reducer = (state: State, action: Action): State => {
+
+const reducer = (state: State, action: Action): State => {
     switch (action.t) {
       case 'init':
-        return {
-          squares: initSquares(),
-          currentPlayer: action.player,
-        };
-      case 'turn':
-        if (canPut(state.squares, state.currentPlayer, action.x, action.y)) {
           return {
-            squares: turnOver(state.squares, state.currentPlayer, action.x, action.y),
-            currentPlayer: nextPlayer(state.currentPlayer),
+              squares: initSquares(),
+              currentPlayer: action.player,
           };
-        }
-        return {
-          ...state,
-        };
+      case 'turn':
+          if (canPut(state.squares, state.currentPlayer, action.x, action.y)) {
+              return {
+                  squares: flipPieces(state.squares, state.currentPlayer, action.x, action.y),
+                  currentPlayer: nextPlayer(state.currentPlayer),
+              };
+          }
+          return {
+              ...state,
+          };
       case 'skip':
-        return {
-          ...state,
-          currentPlayer: nextPlayer(state.currentPlayer),
-        };
+          return {
+              ...state,
+              currentPlayer: nextPlayer(state.currentPlayer),
+          };
     }
-  };
-  
-  export const Game = (props: {
+};
+
+const convertSquaresToString = (squares: SquareType[][]): string => {
+    let boardStr = "";
+    for (let j = 0; j < squares.length; j++) {
+        for (let i = 0; i < squares[0].length; i++) {
+            if (squares[i][j] === SquareType.Black) {
+                boardStr += "B";
+            } else if (squares[i][j] === SquareType.White) {
+                boardStr += "W";
+            } else if (squares[i][j] === SquareType.Undef) {
+                boardStr += "*"
+            }
+        }
+        boardStr += "\n";
+    }
+    return boardStr;
+}
+
+export const Game = (props: {
     players: IPlayer[],
   }) => {
     const { players } = props;
@@ -180,40 +197,43 @@ const countTurnOver = (
     const [points, setPoints] = useState([0, 0]);
   
     useEffect(() => {
-      const isSkipCurrentUser = isSkip(state.squares, state.currentPlayer);
-      const isFinish = isSkipCurrentUser &&
-        isSkip(state.squares, nextPlayer(state.currentPlayer));
-  
-      if (isFinish) {
-        alert('finish');
-        dispatch({ t: 'init', player: players[0] });
-        return;
-      }
-  
-      if (isSkipCurrentUser) {
-        alert('skip');
-        dispatch({ t: 'skip' });
-      }
-      const points = calcPoints(state.squares);
-      setPoints(points);
+        const isSkipCurrentUser = isSkip(state.squares, state.currentPlayer);
+        const isFinish = isSkipCurrentUser &&
+          isSkip(state.squares, nextPlayer(state.currentPlayer));
+    
+        if (isFinish) {
+            alert('finish');
+            dispatch({ t: 'init', player: players[0] });
+            return;
+        }
+    
+        if (isSkipCurrentUser) {
+            alert('skip');
+            dispatch({ t: 'skip' });
+        }
+        const points = calcPoints(state.squares);
+        setPoints(points);
 
-      if (state.currentPlayer.squareType === SquareType.White) {
-        // Now it's AI's turn.
-        // dispatch({t: "turn", x: 3, y: 5})
-      }
+        if (state.currentPlayer.squareType === SquareType.White) {
+            // Now it's AI's turn.
+            // dispatch({t: "turn", x: 3, y: 5})
+            // print the current state of board
+            const boardStr = convertSquaresToString(state.squares);
+            console.log(boardStr);
+        }
     }, [state, players]);
   
     return (
       <>
         <Board SquareTypes={state.squares} onClick={(x: number, y: number) => {
             console.log(x, y);
-          dispatch({ t: 'turn', x: x, y: y });
+            dispatch({ t: 'turn', x: x, y: y });
         }} />
         <Option>
-          <InitButton onClick={() => dispatch({ t: 'init', player: players[0] })}>init</InitButton>
-          <Player player={players[0]} point={points[0]} />
-          <Player player={players[1]} point={points[1]} />
+            <InitButton onClick={() => dispatch({ t: 'init', player: players[0] })}>init</InitButton>
+            <Player player={players[0]} point={points[0]} />
+            <Player player={players[1]} point={points[1]} />
         </Option>
       </>
     );
-  };
+};

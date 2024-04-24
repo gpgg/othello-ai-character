@@ -12,7 +12,7 @@ Model: 少女a by 璃舞Rimai
 Motions are from free materials: haru_greeter_pro_jp by Live2D
 
 VTube Studio:
-- Audio Plugin
+- Audio Plugin: VTS Desktop Audio
 - python api: pyvts
 
 

@@ -1,19 +1,25 @@
 from openai import OpenAI
 from utils import Config
+import re
+
+pattern = "Position:([\\d\\D]+)\nJapanese Explanation:([\\d\\D]+)"
+repatter = re.compile(pattern)
+
+config = Config()
+client = OpenAI(api_key=config.api_key)
 
 
-# config = Config()
-# client = OpenAI(api_key=config.api_key)
 
-# response = client.chat.completions.create(
-#   model="gpt-3.5-turbo",
-#   messages=[
-#     {"role": "system", "content": "You are a helpful assistant."},
-#     {"role": "user", "content": "Who won the world series in 2020?"},
-#     {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
-#     {"role": "user", "content": "Where was it played?"}
-#   ]
-# )
+def chat_completion(user_input):
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "あなたはバーチャルユーチューバーで、名前はつばめです。東京大学の五月祭にゲストとして参加しています。"},
+            {"role": "user", "content": user_input},
+        ]
+    )
+    
+    return response.choices[0].message.content
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -27,7 +33,16 @@ def add_message():
     # data = json.loads(data)
     print(data["user_msg"])
     
-    response = jsonify({"move": [5, 3]})
+    user_message = data["user_msg"]
+    response = chat_completion(user_message)
+    
+    move, explanation = repatter.findall(response)[0]
+    move = move.strip()
+    x = int(move[1])
+    y = int(move[3])
+    explanation = explanation.strip()
+    print(explanation)
+    response = jsonify({"move": [x, y]})
     # response.headers.add('Access-Control-Allow-Origin', '*')
     return response
   

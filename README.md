@@ -1,30 +1,23 @@
-# React + TypeScript + Vite
+# Othello Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## react + styled components
 
-Currently, two official plugins are available:
+# Response Generation: ChatGPT
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Character
 
-## Expanding the ESLint configuration
+## Live2D Model
+Model: 少女a by 璃舞Rimai
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Motions are from free materials: haru_greeter_pro_jp by Live2D
 
-- Configure the top-level `parserOptions` property like this:
+VTube Studio:
+- Audio Plugin
+- python api: pyvts
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+https://github.com/DenchiSoft/VTubeStudio
+https://github.com/Genteki/pyvts
+
+# Sound
+VITS

@@ -5,6 +5,7 @@ A virtual ai character that can play Othello with you while narrating the game.
 ゲームのナレーションをしながら、一緒にオセロをして遊べるバーチャル AI キャラクター。
 
 Demo:
+![Demo](demo2.png)
 
 <video src="Demo2.mp4" width="320" height="240" controls unmuted></video>
 

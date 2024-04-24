@@ -1,6 +1,6 @@
-# Othello Game
+# Othello Game Virtual AI Character
 
-A virtual ai character that can play Othello with you while narrating the game.
+A virtual AI character that can play Othello with you while narrating the game.
 
 ゲームのナレーションをしながら、一緒にオセロをして遊べるバーチャル AI キャラクター。
 
@@ -29,9 +29,16 @@ VTube Studio:
   - Mouth Open <-> VTS Desktop Volume
 - python api: pyvts
 
-https://github.com/DenchiSoft/VTubeStudio
-https://github.com/Genteki/pyvts
-
 # Sound
 
-VITS
+VITS: https://huggingface.co/spaces/zomehwh/vits-models
+
+# Special Thanks
+
+https://github.com/DenchiSoft/VTubeStudio
+
+https://huggingface.co/spaces/zomehwh/vits-models
+
+https://github.com/tjmtmmnk/react-othello
+
+https://github.com/Genteki/pyvts

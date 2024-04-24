@@ -1,11 +1,12 @@
+import os
+import re
+
+import pygame
+import requests
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 from openai import OpenAI
 from utils import Config
-import re
-import os
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import requests
-import pygame
 from vits import initialize, save_audio_clip
 
 # VITS Initilization
@@ -49,7 +50,7 @@ def fetch_audio_file(filename, save_path = "wav_files/"):
 def play_wav_file(file_location):
     pygame.init()
     pygame.mixer.init()
-    pygame.mixer.music.load("Wet Hands.wav")
+    pygame.mixer.music.load(file_location)
     pygame.mixer.music.play()
     while pygame.mixer.music.get_busy():
         pass
@@ -66,6 +67,7 @@ def add_message():
     print(response)
     move, explanation = repatter.findall(response)[0]
     move = move.strip()
+    move = move.replace(" ", "")
     x = int(move[1])
     y = int(move[3])
     explanation = explanation.strip()
